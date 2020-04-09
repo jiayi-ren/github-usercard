@@ -43,6 +43,24 @@
           user, and adding that card to the DOM.
 */
 
+
+/* List of LS Instructors Github username's: 
+  tetondan
+  dustinmyers
+  justsml
+  luishrd
+  bigknell
+*/
+
+const followersArray = [];
+
+followersArray.push("tetondan")
+followersArray.push("dustinmyers")
+followersArray.push("justsml")
+followersArray.push("luishrd")
+followersArray.push("bigknell")
+
+/// Generate Card for github user ///
 function GitCard(gitUser){
   const card = document.createElement("div")
   const userImg = document.createElement("img")
@@ -86,14 +104,16 @@ function GitCard(gitUser){
   return card
 } 
 
-function GetMyGitHub(){
-   axios.get(`https://api.github.com/users/jiayi-ren`)
+/// Generate Github card by username ///
+function GetGitHub(username){
+   axios.get(`https://api.github.com/users/${username}`)
   .then(
     response =>{
 
       const cards = document.querySelector(".cards")
-      
+
       cards.appendChild(GitCard(response.data))
+
     }
   )
   .catch(
@@ -103,14 +123,58 @@ function GetMyGitHub(){
   )
 }
 
-const followersArray = [];
+/// Generate user's followers github cards ///
+function GetFollowersGit(username) {
 
-GetMyGitHub()
+  console.log(followersArray)
 
-/* List of LS Instructors Github username's: 
-  tetondan
-  dustinmyers
-  justsml
-  luishrd
-  bigknell
-*/
+  followersArray.forEach( follower =>{
+
+    console.log(follower)
+
+    axios.get(`https://api.github.com/users/${follower}`)
+    .then(
+      response =>{
+
+        const cards = document.querySelector(".cards")
+
+        cards.appendChild(GitCard(response.data))
+
+      }
+    )
+    .catch(
+      error =>{
+        console.log(error)
+      }
+    )
+  })
+}
+
+/// Get user's followers and their cards ///
+function GetFollowers(username){
+  axios.get(`https://api.github.com/users/${username}/followers`)
+  .then(
+    response =>{
+      response.data.forEach( follower =>{
+        followersArray.push(follower.login)
+      })
+    }
+  )
+  .then(
+    response =>{
+      GetFollowersGit(username)
+    }
+  )
+  .catch(
+    error =>{
+      console.log(error)
+    }
+  )
+}
+
+const user = "jiayi-ren"
+GetGitHub(user)
+GetFollowers(user)
+
+
+
