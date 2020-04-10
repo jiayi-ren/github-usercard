@@ -61,7 +61,7 @@ followersArray.push("luishrd")
 followersArray.push("bigknell")
 
 /// Generate Card for github user ///
-function GitCard(gitUser){
+function GitCard(gitUser, calendar=null){
   const card = document.createElement("div")
   const userImg = document.createElement("img")
   const cardInfo = document.createElement("div")
@@ -83,7 +83,6 @@ function GitCard(gitUser){
   cardInfo.appendChild(followers)
   cardInfo.appendChild(following)
   cardInfo.appendChild(bio)
-  profile.appendChild(userURL)
 
   card.classList.add("card")
   cardInfo.classList.add("card-info")
@@ -97,23 +96,40 @@ function GitCard(gitUser){
   userName.textContent = gitUser.login
   location.textContent = `Location ${gitUser.location}`
   profile.textContent = `Profile: `
+  userURL.textContent = `${gitUser.html_url}`
   followers.textContent = `Followers: ${gitUser.followers}`
   following.textContent = `Following: ${gitUser.following}`
   bio.textContent = `Bio: ${gitUser.bio}`
 
+  profile.appendChild(userURL)
+
+  if(calendar){
+    card.appendChild(calendar)
+  }
+
   return card
 } 
+
+function GetGitCalendar(username){
+  const calendarDiv = document.createElement("div")
+  const calendar = document.createElement("img")
+
+  calendarDiv.appendChild(calendar)
+  calendar.setAttribute("src", `https://ghchart.rshah.org/${username}`)
+
+  calendar.style.width = "100%"
+  calendar.style.marginTop = "20px"
+
+  return calendarDiv
+}
 
 /// Generate Github card by username ///
 function GetGitHub(username){
    axios.get(`https://api.github.com/users/${username}`)
   .then(
     response =>{
-
       const cards = document.querySelector(".cards")
-
-      cards.appendChild(GitCard(response.data))
-
+      cards.appendChild(GitCard(response.data, GetGitCalendar(response.data.login)))
     }
   )
   .catch(
@@ -125,21 +141,12 @@ function GetGitHub(username){
 
 /// Generate user's followers github cards ///
 function GetFollowersGit(username) {
-
-  console.log(followersArray)
-
   followersArray.forEach( follower =>{
-
-    console.log(follower)
-
     axios.get(`https://api.github.com/users/${follower}`)
     .then(
       response =>{
-
         const cards = document.querySelector(".cards")
-
-        cards.appendChild(GitCard(response.data))
-
+        cards.appendChild(GitCard(response.data, GetGitCalendar(response.data.login)))
       }
     )
     .catch(
@@ -175,6 +182,3 @@ function GetFollowers(username){
 const user = "jiayi-ren"
 GetGitHub(user)
 GetFollowers(user)
-
-
-
