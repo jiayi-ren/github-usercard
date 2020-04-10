@@ -95,6 +95,7 @@ body {
   width: 100%;
   padding: 20px;
   display: flex;
+  flex-wrap: wrap;
   border-radius: 5px;
   box-shadow: 0 1px 6px -2px #000;
   background-color: #FFF;
@@ -115,6 +116,10 @@ body {
 .card p {
   font-size: 1.4rem;
   margin-bottom: 3px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 530px;
 }
 
 .card .username {
